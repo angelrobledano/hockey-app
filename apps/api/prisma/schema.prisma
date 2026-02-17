@@ -1,0 +1,126 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Sport {
+  RINK_HOCKEY
+}
+
+enum PhaseType {
+  LEAGUE
+}
+
+enum Tiebreak {
+  POINTS
+  HEAD_TO_HEAD_POINTS
+  GOAL_DIFFERENCE
+  GOALS_FOR
+}
+
+enum LegsMode {
+  SINGLE_LEG
+  DOUBLE_LEG
+}
+
+model Competition {
+  id      String   @id @default(cuid())
+  name    String
+  slug    String   @unique
+  sport   Sport
+  seasons Season[]
+}
+
+model Season {
+  id            String      @id @default(cuid())
+  competitionId String
+  name          String
+  competition   Competition @relation(fields: [competitionId], references: [id])
+  teams         SeasonTeam[]
+  categories    Category[]
+  phases        Phase[]
+  ruleSet       RuleSet?
+}
+
+model Team {
+  id          String       @id @default(cuid())
+  name        String
+  seasonTeams SeasonTeam[]
+}
+
+model SeasonTeam {
+  seasonId String
+  teamId   String
+  seed     Int?
+  season   Season @relation(fields: [seasonId], references: [id])
+  team     Team   @relation(fields: [teamId], references: [id])
+  @@id([seasonId, teamId])
+}
+
+model Category {
+  id            String @id @default(cuid())
+  seasonId      String
+  name          String
+  periodsCount  Int    @default(2)
+  periodMinutes Int    @default(25)
+  season        Season @relation(fields: [seasonId], references: [id])
+}
+
+model RuleSet {
+  id            String     @id @default(cuid())
+  seasonId      String     @unique
+  pointsWin     Int
+  pointsDraw    Int
+  pointsLoss    Int
+  tiebreakOrder Tiebreak[]
+  season        Season     @relation(fields: [seasonId], references: [id])
+}
+
+model Phase {
+  id            String         @id @default(cuid())
+  seasonId      String
+  phaseType     PhaseType
+  season        Season         @relation(fields: [seasonId], references: [id])
+  leagueSettings LeagueSettings?
+  matches       Match[]
+  standingsRows StandingsRow[]
+}
+
+model LeagueSettings {
+  phaseId  String   @id
+  legsMode LegsMode
+  phase    Phase    @relation(fields: [phaseId], references: [id])
+}
+
+model Match {
+  id         String @id @default(cuid())
+  phaseId    String
+  homeTeamId String
+  awayTeamId String
+  round      Int
+  kickoffAt  DateTime?
+  homeGoals  Int?
+  awayGoals  Int?
+  phase      Phase  @relation(fields: [phaseId], references: [id])
+}
+
+model StandingsRow {
+  id               String @id @default(cuid())
+  phaseId          String
+  teamId           String
+  played           Int    @default(0)
+  wins             Int    @default(0)
+  draws            Int    @default(0)
+  losses           Int    @default(0)
+  gf               Int    @default(0)
+  ga               Int    @default(0)
+  gd               Int    @default(0)
+  points           Int    @default(0)
+  headToHeadPoints Int    @default(0)
+  rank             Int    @default(0)
+  phase            Phase  @relation(fields: [phaseId], references: [id])
+}
