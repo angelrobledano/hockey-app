@@ -1,0 +1,12 @@
+{
+  "name": "hockey-app",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "npm run build -w @hockey/shared && npm run build -w @hockey/api && npm run build -w @hockey/web",
+    "test": "npm run test -w @hockey/api"
+  }
+}
