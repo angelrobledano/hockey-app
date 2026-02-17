@@ -102,6 +102,7 @@ model Match {
   homeTeamId String
   awayTeamId String
   round      Int
+  kickoffAt  DateTime?
   homeGoals  Int?
   awayGoals  Int?
   phase      Phase  @relation(fields: [phaseId], references: [id])

@@ -14,8 +14,8 @@ describe('public standings sorting', () => {
       }
     };
     const controller = new PublicController(prisma);
-    const rows = await controller.standings('p1');
-    expect(rows[0].teamId).toBe('B');
-    expect(rows[0].rank).toBe(1);
+    const res = await controller.standings('p1');
+    expect(res.data[0].teamId).toBe('B');
+    expect(res.data[0].rank).toBe(1);
   });
 });

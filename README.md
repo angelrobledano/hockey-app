@@ -15,6 +15,16 @@ Stack: Next.js + NestJS + PostgreSQL + Docker.
 
 Swagger: `http://localhost:3001/api/docs`
 
+## Contrato público Sprint 1 (curl reales)
+- Home por fecha:
+  - `curl "http://localhost:3001/public/home?date=2026-05-12"`
+- Temporada por competición:
+  - `curl "http://localhost:3001/public/competitions/liga-demo/seasons/season_123"`
+- Clasificación de fase:
+  - `curl "http://localhost:3001/public/phases/phs_123/standings"`
+- Calendario de fase:
+  - `curl "http://localhost:3001/public/phases/phs_123/matches"`
+
 ## Docker
 `docker compose up --build`
 
@@ -43,3 +53,4 @@ Si `npm install` falla con `403 Forbidden` (proxy/env), ejecutar **exactamente**
 - `apps/api/test/admin.service.spec.ts`
 - `apps/api/test/scheduler.spec.ts`
 - `apps/api/test/public.controller.spec.ts`
+- `apps/api/test/public.e2e-spec.ts`
